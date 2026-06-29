@@ -50,3 +50,37 @@ def test_create_and_update_ticket():
         assert update.status_code == 200
         assert update.json()["status"] == "resolved"
         assert update.json()["follow_up"] == "None"
+
+
+def test_filter_tickets_by_status():
+    with TestClient(app) as client:
+        response = client.get("/api/tickets", params={"status": "resolved"})
+        assert response.status_code == 200
+        tickets = response.json()
+        assert len(tickets) >= 1
+        assert all(t["status"] == "resolved" for t in tickets)
+
+
+def test_filter_tickets_by_severity():
+    with TestClient(app) as client:
+        response = client.get("/api/tickets", params={"severity": "P1"})
+        assert response.status_code == 200
+        tickets = response.json()
+        assert len(tickets) >= 1
+        assert all(t["severity"] == "P1" for t in tickets)
+
+
+def test_duplicate_ticket_number_rejected():
+    with TestClient(app) as client:
+        response = client.post(
+            "/api/tickets",
+            json={
+                "ticket_number": "INC-240601",
+                "title": "Duplicate attempt",
+                "description": "Should fail because INC-240601 is seeded.",
+                "severity": "P4",
+                "module": "Testing",
+                "reported_by": "pytest@example.com",
+            },
+        )
+        assert response.status_code == 409

@@ -2,6 +2,14 @@
 
 A documentation-first portfolio repository demonstrating **enterprise application support** practices: incident triage, SQL data quality checks, UAT planning, release management, user training, vendor escalation, and post-deployment monitoring.
 
+[![Tests](https://github.com/dawit-Tegegnwork/application-support-runbook-lab/actions/workflows/test.yml/badge.svg)](https://github.com/dawit-Tegegnwork/application-support-runbook-lab/actions/workflows/test.yml)
+
+**Requirements:** Python 3.12+
+
+## Screenshot
+
+![Issue tracker API docs](docs/screenshots/swagger.png)
+
 Includes an optional **FastAPI issue tracker** with synthetic tickets illustrating severity, module, root cause, status, resolution, and follow-up fields.
 
 > **Note:** All incidents, organizations, and user accounts in this repository are **synthetic**. No employer-confidential processes or production system details are included.
