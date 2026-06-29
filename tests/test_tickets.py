@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -20,11 +22,12 @@ def test_list_seeded_tickets():
 
 
 def test_create_and_update_ticket():
+    ticket_number = f"INC-TEST-{uuid4().hex[:8]}"
     with TestClient(app) as client:
         create = client.post(
             "/api/tickets",
             json={
-                "ticket_number": "INC-TEST-01",
+                "ticket_number": ticket_number,
                 "title": "Synthetic test ticket",
                 "description": "Created during automated test run for portfolio demo.",
                 "severity": "P4",
