@@ -123,12 +123,54 @@ def landing_page():
               <div class="card"><strong>Tracker</strong>Synthetic tickets with severity, status, root cause, and resolution.</div>
             </div>
             <div class="actions">
-              <a href="/docs">Open API docs</a>
-              <a class="secondary" href="/api/tickets">View sample tickets</a>
+              <a href="/board">Triage board</a>
+              <a class="secondary" href="/docs">Open API docs</a>
+              <a class="secondary" href="/api/tickets?ticket_number=INC-240601">INC-240601 sample</a>
             </div>
           </section>
         </main>
       </body>
+    </html>
+    """
+
+
+@app.get("/board", response_class=HTMLResponse)
+def triage_board():
+    return """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8" />
+      <title>Support Triage Board</title>
+      <style>
+        body { font-family: system-ui, sans-serif; margin: 2rem; background: #111827; color: #f9fafb; }
+        table { width: 100%; border-collapse: collapse; background: #1f2937; }
+        th, td { padding: 0.75rem 1rem; border-bottom: 1px solid #374151; text-align: left; font-size: 0.9rem; }
+        th { background: #0f172a; }
+        .p1 { color: #fca5a5; font-weight: 700; }
+        .p2 { color: #fdba74; font-weight: 700; }
+        .p3 { color: #fde68a; }
+        a { color: #fbbf24; }
+      </style>
+    </head>
+    <body>
+      <h1>Support Triage Board</h1>
+      <p>Synthetic incidents for portfolio demo.</p>
+      <table>
+        <thead><tr><th>Ticket</th><th>Severity</th><th>Status</th><th>Module</th><th>Title</th></tr></thead>
+        <tbody id="rows"><tr><td colspan="5">Loading...</td></tr></tbody>
+      </table>
+      <p><a href="/docs">API docs</a> · <a href="/">Home</a></p>
+      <script>
+        fetch('/api/tickets').then(r => r.json()).then(tickets => {
+          document.getElementById('rows').innerHTML = tickets.map(t => {
+            const sev = (t.severity || '').toLowerCase();
+            const cls = sev === 'p1' ? 'p1' : sev === 'p2' ? 'p2' : sev === 'p3' ? 'p3' : '';
+            return `<tr><td>${t.ticket_number}</td><td class="${cls}">${t.severity}</td><td>${t.status}</td><td>${t.module}</td><td>${t.title}</td></tr>`;
+          }).join('');
+        });
+      </script>
+    </body>
     </html>
     """
 
@@ -154,6 +196,7 @@ def list_tickets(
     status: TicketStatus | None = None,
     severity: Severity | None = None,
     module: str | None = None,
+    ticket_number: str | None = None,
     db: Session = Depends(get_db),
 ):
     query = db.query(SupportTicket)
@@ -163,6 +206,8 @@ def list_tickets(
         query = query.filter(SupportTicket.severity == severity)
     if module:
         query = query.filter(SupportTicket.module.ilike(f"%{module}%"))
+    if ticket_number:
+        query = query.filter(SupportTicket.ticket_number == ticket_number)
     return query.order_by(SupportTicket.created_at.desc()).all()
 
 

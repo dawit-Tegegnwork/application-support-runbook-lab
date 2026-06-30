@@ -6,6 +6,13 @@ A documentation-first portfolio repository demonstrating **enterprise applicatio
 
 **Requirements:** Python 3.12+
 
+## Demo scenario (3–5 minutes)
+
+1. `docker compose up --build` or `uvicorn app.main:app --reload`
+2. Open http://127.0.0.1:8010/board (or :8000 locally) — triage board with INC-240601
+3. `GET /api/tickets?ticket_number=INC-240601`
+4. `python scripts/data_health_check.py` — run synthetic SQL-style checks
+
 ## Screenshot
 
 ![Issue tracker API docs](docs/screenshots/swagger.png)

@@ -1,0 +1,12 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8010:8000"
+    environment:
+      DATABASE_URL: sqlite:////data/support_tickets.db
+    volumes:
+      - runbook_data:/data
+
+volumes:
+  runbook_data:

@@ -70,6 +70,15 @@ def test_filter_tickets_by_severity():
         assert all(t["severity"] == "P1" for t in tickets)
 
 
+def test_filter_tickets_by_ticket_number():
+    with TestClient(app) as client:
+        response = client.get("/api/tickets", params={"ticket_number": "INC-240601"})
+        assert response.status_code == 200
+        tickets = response.json()
+        assert len(tickets) == 1
+        assert tickets[0]["ticket_number"] == "INC-240601"
+
+
 def test_duplicate_ticket_number_rejected():
     with TestClient(app) as client:
         response = client.post(
