@@ -6,6 +6,53 @@ A documentation-first portfolio repository demonstrating **enterprise applicatio
 
 **Requirements:** Python 3.12+
 
+This is a **production-style portfolio project** using **synthetic incident and support data**. It demonstrates application support workflows, triage APIs, and runbook-driven operations — not employer production system details.
+
+## Live Demo
+
+| Channel | URL |
+|---------|-----|
+| **Cloud live demo** | Coming soon — deploy via Docker on Render (see `docker-compose.yml`) |
+| **Local** | `http://127.0.0.1:8010` (Docker) or `http://127.0.0.1:8000` (`uvicorn`) |
+
+## Quick Test in 3 Minutes
+
+```bash
+docker compose up --build
+curl http://localhost:8010/health
+```
+
+1. Open http://localhost:8010/ — landing page  
+2. Open http://localhost:8010/board — triage board (INC-240601)  
+3. `curl "http://localhost:8010/api/tickets?ticket_number=INC-240601"`  
+4. `python scripts/data_health_check.py` — synthetic SQL-style checks  
+
+## Production-Style Features
+
+- `/health` JSON check  
+- `/` landing page and `/board` triage UI  
+- Issue tracker API with severity, module, root cause fields  
+- Runbook documentation + data health script  
+- Docker Compose + GitHub Actions CI  
+
+## Health Check
+
+```bash
+curl http://localhost:8010/health
+# {"status":"ok","service":"application-support-runbook-lab"}
+```
+
+## Synthetic Data Notice
+
+All incidents, organizations, and accounts are **synthetic**. No employer-confidential processes or production system details are included.
+
+## What Recruiters Can Evaluate
+
+- Application support and incident triage thinking  
+- FastAPI issue-tracker API design  
+- Documentation-first runbook structure  
+- Data quality validation scripts  
+
 ## Demo scenario (3–5 minutes)
 
 1. `docker compose up --build` or `uvicorn app.main:app --reload`

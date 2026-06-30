@@ -5,6 +5,7 @@ from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 
+from app.landing import render_landing
 from app.models import SessionLocal, Severity, SupportTicket, TicketStatus, init_db
 from app.schemas import TicketCreate, TicketRead, TicketUpdate
 
@@ -86,52 +87,19 @@ app = FastAPI(
 
 @app.get("/", response_class=HTMLResponse)
 def landing_page():
-    return """
-    <!doctype html>
-    <html lang="en">
-      <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Application Support Runbook Lab</title>
-        <style>
-          body { margin: 0; font-family: Inter, ui-sans-serif, system-ui, sans-serif; background: #111827; color: #f9fafb; }
-          main { max-width: 1040px; margin: 0 auto; padding: 56px 22px; }
-          .hero { border-radius: 30px; padding: 40px; background: linear-gradient(135deg, #1f2937, #111827); border: 1px solid #374151; box-shadow: 0 28px 70px rgba(0,0,0,.28); }
-          .kicker { color: #fbbf24; text-transform: uppercase; letter-spacing: .16em; font-size: 12px; font-weight: 800; }
-          h1 { margin: 12px 0; font-size: clamp(34px, 6vw, 62px); line-height: .98; letter-spacing: -.05em; }
-          p { color: #d1d5db; line-height: 1.7; font-size: 17px; }
-          .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 24px; }
-          .card { border: 1px solid #374151; border-radius: 18px; padding: 18px; background: rgba(17, 24, 39, .78); }
-          .card strong { display: block; margin-bottom: 8px; color: #fff; }
-          .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
-          a { color: #111827; background: #fbbf24; padding: 12px 16px; border-radius: 999px; text-decoration: none; font-weight: 800; }
-          a.secondary { color: #f9fafb; background: transparent; border: 1px solid #4b5563; }
-        </style>
-      </head>
-      <body>
-        <main>
-          <section class="hero">
-            <div class="kicker">Application support portfolio lab</div>
-            <h1>Incident triage, UAT, release checks, SQL diagnostics, and support documentation.</h1>
-            <p>
-              A practical support-management demo combining seven runbooks with a synthetic FastAPI issue tracker
-              for tickets, severity, root cause, resolution, and follow-up actions.
-            </p>
-            <div class="grid">
-              <div class="card"><strong>Runbooks</strong>Incident triage, vendor escalation, UAT, release, and monitoring.</div>
-              <div class="card"><strong>Diagnostics</strong>SQL data-quality checks and reproducible support scenarios.</div>
-              <div class="card"><strong>Tracker</strong>Synthetic tickets with severity, status, root cause, and resolution.</div>
-            </div>
-            <div class="actions">
-              <a href="/board">Triage board</a>
-              <a class="secondary" href="/docs">Open API docs</a>
-              <a class="secondary" href="/api/tickets?ticket_number=INC-240601">INC-240601 sample</a>
-            </div>
-          </section>
-        </main>
-      </body>
-    </html>
-    """
+    return render_landing(
+        "Application Support Runbook Lab",
+        "Production-style support portfolio — runbooks plus a working triage board and ticket API.",
+        "Synthetic incidents and organizations only. Not employer-confidential processes.",
+        "application-support-runbook-lab",
+        extra_links=[("/board", "Triage board")],
+        quick_steps=[
+            'Check <a href="/health">/health</a>',
+            'Open <a href="/board">/board</a> — see INC-240601 and other seeded tickets',
+            "<code>GET /api/tickets?ticket_number=INC-240601</code>",
+            "Run <code>python scripts/data_health_check.py</code> for synthetic SQL-style checks",
+        ],
+    )
 
 
 @app.get("/board", response_class=HTMLResponse)
@@ -175,9 +143,14 @@ def triage_board():
     """
 
 
+@app.get("/health")
+def root_health():
+    return {"status": "ok", "service": "application-support-runbook-lab"}
+
+
 @app.get("/api/health")
 def health():
-    return {"status": "ok"}
+    return {"status": "ok", "service": "application-support-runbook-lab"}
 
 
 @app.post("/api/tickets", response_model=TicketRead, status_code=201)
