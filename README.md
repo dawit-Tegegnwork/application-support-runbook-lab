@@ -12,7 +12,8 @@ This is a **production-style portfolio project** using **synthetic incident and 
 
 | Channel | URL |
 |---------|-----|
-| **Cloud live demo** | Coming soon — deploy via Docker on Render (see `docker-compose.yml`) |
+| **Cloud live demo** | https://application-support-runbook-lab.onrender.com/board (free tier — cold start ~30s) |
+| **API docs** | https://application-support-runbook-lab.onrender.com/docs |
 | **Local** | `http://127.0.0.1:8010` (Docker) or `http://127.0.0.1:8000` (`uvicorn`) |
 
 ## Quick Test in 3 Minutes
@@ -62,7 +63,7 @@ All incidents, organizations, and accounts are **synthetic**. No employer-confid
 
 ## Screenshot
 
-![Issue tracker API docs](docs/screenshots/swagger.png)
+![Triage board](docs/screenshots/triage-board.png)
 
 Includes an optional **FastAPI issue tracker** with synthetic tickets illustrating severity, module, root cause, status, resolution, and follow-up fields.
 

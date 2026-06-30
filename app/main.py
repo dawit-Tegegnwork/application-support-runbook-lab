@@ -109,28 +109,41 @@ def triage_board():
     <html lang="en">
     <head>
       <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
       <title>Support Triage Board</title>
       <style>
-        body { font-family: system-ui, sans-serif; margin: 2rem; background: #111827; color: #f9fafb; }
-        table { width: 100%; border-collapse: collapse; background: #1f2937; }
-        th, td { padding: 0.75rem 1rem; border-bottom: 1px solid #374151; text-align: left; font-size: 0.9rem; }
-        th { background: #0f172a; }
-        .p1 { color: #fca5a5; font-weight: 700; }
-        .p2 { color: #fdba74; font-weight: 700; }
-        .p3 { color: #fde68a; }
-        a { color: #fbbf24; }
+        body { font-family: system-ui, sans-serif; margin: 0; background: #FBF7F0; color: #0E2A3B; }
+        .banner { background: #ecfdf5; border-bottom: 1px solid #6ee7b7; color: #065f46; padding: 0.65rem 1.5rem; font-size: 0.85rem; }
+        main { max-width: 1000px; margin: 0 auto; padding: 1.75rem 1.25rem; }
+        .hero { background: #fff; border: 1px solid #F2742C; border-left: 4px solid #F2742C; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+        .hero strong { color: #F2742C; }
+        table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #E8DFD0; border-radius: 12px; overflow: hidden; }
+        th, td { padding: 0.75rem 1rem; border-bottom: 1px solid #E8DFD0; text-align: left; font-size: 0.88rem; }
+        th { background: #F8F3EA; font-size: 0.72rem; text-transform: uppercase; color: #5B6B73; }
+        .p1 { color: #dc2626; font-weight: 700; }
+        .p2 { color: #F2742C; font-weight: 700; }
+        .p3 { color: #ca8a04; }
+        a { color: #0E9E8E; font-weight: 600; }
       </style>
     </head>
     <body>
-      <h1>Support Triage Board</h1>
-      <p>Synthetic incidents for portfolio demo.</p>
-      <table>
-        <thead><tr><th>Ticket</th><th>Severity</th><th>Status</th><th>Module</th><th>Title</th></tr></thead>
-        <tbody id="rows"><tr><td colspan="5">Loading...</td></tr></tbody>
-      </table>
-      <p><a href="/docs">API docs</a> · <a href="/">Home</a></p>
+      <div class="banner"><strong>Synthetic incidents only.</strong> Portfolio demo — not employer-confidential data.</div>
+      <main>
+        <h1>Support Triage Board</h1>
+        <div class="hero" id="hero">Loading featured incident...</div>
+        <table>
+          <thead><tr><th>Ticket</th><th>Severity</th><th>Status</th><th>Module</th><th>Title</th></tr></thead>
+          <tbody id="rows"><tr><td colspan="5">Loading...</td></tr></tbody>
+        </table>
+        <p style="margin-top:1.25rem"><a href="/">Home</a> · <a href="/docs">API docs</a></p>
+      </main>
       <script>
         fetch('/api/tickets').then(r => r.json()).then(tickets => {
+          const featured = tickets.find(t => t.ticket_number === 'INC-240601') || tickets[0];
+          if (featured) {
+            document.getElementById('hero').innerHTML =
+              `<strong>${featured.ticket_number}</strong> — ${featured.title}<br><span style="color:#5B6B73;font-size:0.9rem">${featured.description || ''}</span>`;
+          }
           document.getElementById('rows').innerHTML = tickets.map(t => {
             const sev = (t.severity || '').toLowerCase();
             const cls = sev === 'p1' ? 'p1' : sev === 'p2' ? 'p2' : sev === 'p3' ? 'p3' : '';
