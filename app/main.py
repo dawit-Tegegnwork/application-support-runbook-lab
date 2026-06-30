@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime
 
 from fastapi import Depends, FastAPI, HTTPException, Query
+from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 
 from app.models import SessionLocal, Severity, SupportTicket, TicketStatus, init_db
@@ -81,6 +82,55 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+
+
+@app.get("/", response_class=HTMLResponse)
+def landing_page():
+    return """
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Application Support Runbook Lab</title>
+        <style>
+          body { margin: 0; font-family: Inter, ui-sans-serif, system-ui, sans-serif; background: #111827; color: #f9fafb; }
+          main { max-width: 1040px; margin: 0 auto; padding: 56px 22px; }
+          .hero { border-radius: 30px; padding: 40px; background: linear-gradient(135deg, #1f2937, #111827); border: 1px solid #374151; box-shadow: 0 28px 70px rgba(0,0,0,.28); }
+          .kicker { color: #fbbf24; text-transform: uppercase; letter-spacing: .16em; font-size: 12px; font-weight: 800; }
+          h1 { margin: 12px 0; font-size: clamp(34px, 6vw, 62px); line-height: .98; letter-spacing: -.05em; }
+          p { color: #d1d5db; line-height: 1.7; font-size: 17px; }
+          .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 24px; }
+          .card { border: 1px solid #374151; border-radius: 18px; padding: 18px; background: rgba(17, 24, 39, .78); }
+          .card strong { display: block; margin-bottom: 8px; color: #fff; }
+          .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+          a { color: #111827; background: #fbbf24; padding: 12px 16px; border-radius: 999px; text-decoration: none; font-weight: 800; }
+          a.secondary { color: #f9fafb; background: transparent; border: 1px solid #4b5563; }
+        </style>
+      </head>
+      <body>
+        <main>
+          <section class="hero">
+            <div class="kicker">Application support portfolio lab</div>
+            <h1>Incident triage, UAT, release checks, SQL diagnostics, and support documentation.</h1>
+            <p>
+              A practical support-management demo combining seven runbooks with a synthetic FastAPI issue tracker
+              for tickets, severity, root cause, resolution, and follow-up actions.
+            </p>
+            <div class="grid">
+              <div class="card"><strong>Runbooks</strong>Incident triage, vendor escalation, UAT, release, and monitoring.</div>
+              <div class="card"><strong>Diagnostics</strong>SQL data-quality checks and reproducible support scenarios.</div>
+              <div class="card"><strong>Tracker</strong>Synthetic tickets with severity, status, root cause, and resolution.</div>
+            </div>
+            <div class="actions">
+              <a href="/docs">Open API docs</a>
+              <a class="secondary" href="/api/tickets">View sample tickets</a>
+            </div>
+          </section>
+        </main>
+      </body>
+    </html>
+    """
 
 
 @app.get("/api/health")
